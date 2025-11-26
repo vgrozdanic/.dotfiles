@@ -17,9 +17,9 @@ return {
     },
     keys = {
       { "<leader>,", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Switch Buffer" },
-      { "<leader>/", "<cmd>Telescope live_grep additional_args={'--hidden'}<cr>", desc = "Grep (root dir)" },
+      { "<leader>/", "<cmd>Telescope live_grep vimgrep_arguments={'rg','--color=never','--no-heading','--with-filename','--line-number','--column','--smart-case','--hidden','--glob','!.git/'}<cr>", desc = "Grep (root dir)" },
       { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
-      { "<leader><space>", "<cmd>Telescope find_files hidden=true<cr>", desc = "Find Files (root dir)" },
+      { "<leader><space>", "<cmd>Telescope find_files hidden=true no_ignore_parent=true file_ignore_patterns={'.git/'}<cr>", desc = "Find Files (root dir)" },
       -- find
       { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
       { "<leader>fc", "<cmd>Telescope find_files cwd=~/.config/nvim<cr>", desc = "Find Config File" },

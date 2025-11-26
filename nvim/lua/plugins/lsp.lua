@@ -182,6 +182,9 @@ return {
         },
       })
 
+      -- Enable the configured LSP servers
+      vim.lsp.enable({ "lua_ls", "pyright", "rust_analyzer", "ts_ls", "eslint" })
+
       -- LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),

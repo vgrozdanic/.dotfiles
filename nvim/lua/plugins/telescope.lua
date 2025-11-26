@@ -17,9 +17,9 @@ return {
     },
     keys = {
       { "<leader>,", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Switch Buffer" },
-      { "<leader>/", "<cmd>Telescope live_grep vimgrep_arguments={'rg','--color=never','--no-heading','--with-filename','--line-number','--column','--smart-case','--hidden','--glob','!.git/'}<cr>", desc = "Grep (root dir)" },
+      { "<leader>/", "<cmd>Telescope live_grep<cr>", desc = "Grep (root dir)" },
       { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
-      { "<leader><space>", "<cmd>Telescope find_files hidden=true no_ignore_parent=true file_ignore_patterns={'.git/'}<cr>", desc = "Find Files (root dir)" },
+      { "<leader><space>", "<cmd>Telescope find_files hidden=true<cr>", desc = "Find Files (root dir)" },
       -- find
       { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
       { "<leader>fc", "<cmd>Telescope find_files cwd=~/.config/nvim<cr>", desc = "Find Config File" },
@@ -58,10 +58,16 @@ return {
       local actions = require("telescope.actions")
 
       local open_with_trouble = function(...)
-        return require("trouble.providers.telescope").open_with_trouble(...)
+        local ok, trouble = pcall(require, "trouble.providers.telescope")
+        if ok then
+          return trouble.open_with_trouble(...)
+        end
       end
       local open_selected_with_trouble = function(...)
-        return require("trouble.providers.telescope").open_selected_with_trouble(...)
+        local ok, trouble = pcall(require, "trouble.providers.telescope")
+        if ok then
+          return trouble.open_selected_with_trouble(...)
+        end
       end
 
       return {
@@ -69,14 +75,6 @@ return {
           prompt_prefix = " ",
           selection_caret = " ",
           get_selection_window = function()
-            local wins = vim.api.nvim_list_wins()
-            table.insert(wins, 1, vim.api.nvim_get_current_win())
-            for _, win in ipairs(wins) do
-              local buf = vim.api.nvim_win_get_buf(win)
-              if vim.bo[buf].buftype == "" then
-                return win
-              end
-            end
             return 0
           end,
           mappings = {

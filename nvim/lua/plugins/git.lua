@@ -60,4 +60,19 @@ return {
       vim.g.lazygit_use_custom_config_file_path = 0
     end,
   },
+
+  {
+    "f-person/git-blame.nvim",
+    event = "VeryLazy",
+    opts = {
+      enabled = true,
+      message_template = " <summary> • <date> • <author>",
+      date_format = "%m-%d-%Y %H:%M:%S",
+      virtual_text_column = 1,
+    },
+    keys = {
+      { "<leader>gb", "<cmd>GitBlameToggle<cr>", desc = "Toggle Git Blame" },
+      { "<leader>gB", "<cmd>GitBlameOpenCommitURL<cr>", desc = "Open Commit URL" },
+    },
+  },
 }

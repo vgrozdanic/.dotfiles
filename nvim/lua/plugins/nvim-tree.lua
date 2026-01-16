@@ -10,6 +10,24 @@ return {
       { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Explorer NvimTree (root dir)" },
       { "<leader>E", "<cmd>NvimTreeFindFile<cr>", desc = "Explorer NvimTree (cwd)" },
     },
+    init = function()
+      -- Open nvim-tree when starting with a directory argument
+      vim.api.nvim_create_autocmd("VimEnter", {
+        callback = function(data)
+          -- Check if argument is a directory
+          local directory = vim.fn.isdirectory(data.file) == 1
+          if not directory then
+            return
+          end
+
+          -- Change to that directory
+          vim.cmd.cd(data.file)
+
+          -- Open nvim-tree
+          require("nvim-tree.api").tree.open()
+        end,
+      })
+    end,
     config = function()
       require("nvim-tree").setup({
         sort_by = "case_sensitive",

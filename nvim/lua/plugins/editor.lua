@@ -88,6 +88,12 @@ return {
         end,
       },
     },
+    keys = {
+      { "<leader>cc", "gcc", desc = "Comment line", remap = true },
+      { "<leader>cc", "gc", mode = "v", desc = "Comment selection", remap = true },
+      { "<leader>cb", "gbc", desc = "Comment block", remap = true },
+      { "<leader>cb", "gb", mode = "v", desc = "Comment block selection", remap = true },
+    },
   },
 
   {

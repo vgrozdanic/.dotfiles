@@ -21,6 +21,8 @@ opt.ruler = false
 opt.title = true
 opt.conceallevel = 0
 opt.colorcolumn = "100"
+opt.cmdheight = 1
+opt.shortmess:append("c")
 
 -- Editing
 opt.expandtab = true

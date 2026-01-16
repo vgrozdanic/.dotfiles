@@ -221,11 +221,6 @@ return {
           vim.keymap.set("n", "<leader>cf", function()
             vim.lsp.buf.format({ async = true })
           end, opts)
-
-          -- Print LSP attach info
-          if client then
-            print(string.format("LSP %s attached to %s", client.name, vim.fn.expand("%:t")))
-          end
         end,
       })
     end,

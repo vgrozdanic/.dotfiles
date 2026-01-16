@@ -74,6 +74,7 @@ return {
         defaults = {
           prompt_prefix = " ",
           selection_caret = " ",
+          file_ignore_patterns = { "^.git/" },
           get_selection_window = function()
             return 0
           end,

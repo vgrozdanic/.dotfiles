@@ -35,30 +35,26 @@ return {
   },
 
   {
-    "kdheepak/lazygit.nvim",
-    cmd = {
-      "LazyGit",
-      "LazyGitConfig",
-      "LazyGitCurrentFile",
-      "LazyGitFilter",
-      "LazyGitFilterCurrentFile",
-    },
+    "NeogitOrg/neogit",
     dependencies = {
       "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+      "nvim-telescope/telescope.nvim",
     },
+    cmd = "Neogit",
     keys = {
-      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-      { "<leader>gG", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit Current File" },
-      { "<leader>gf", "<cmd>LazyGitFilter<cr>", desc = "LazyGit Filter" },
+      { "<leader>gg", "<cmd>Neogit<cr>", desc = "Neogit" },
+      { "<leader>gc", "<cmd>Neogit commit<cr>", desc = "Neogit Commit" },
+      { "<leader>gp", "<cmd>Neogit pull<cr>", desc = "Neogit Pull" },
+      { "<leader>gP", "<cmd>Neogit push<cr>", desc = "Neogit Push" },
     },
-    config = function()
-      vim.g.lazygit_floating_window_winblend = 0
-      vim.g.lazygit_floating_window_scaling_factor = 0.9
-      vim.g.lazygit_floating_window_border_chars = {'╭','─', '╮', '│', '╯','─', '╰', '│'}
-      vim.g.lazygit_floating_window_use_plenary = 0
-      vim.g.lazygit_use_neovim_remote = 1
-      vim.g.lazygit_use_custom_config_file_path = 0
-    end,
+    opts = {
+      integrations = {
+        telescope = true,
+        diffview = true,
+      },
+      kind = "tab",
+    },
   },
 
   {

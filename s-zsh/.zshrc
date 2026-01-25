@@ -141,3 +141,8 @@ add-zsh-hook precmd _direnv_hook
 # Bun completions (conditional loading)
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
+hash -d sentry=~/Projects/sentry/
+hash -d getsentry=~/Projects/getsentry/
+hash -d relay=~/Projects/relay/
+hash -d sentry-docs=~/Projects/sentry-docs/
+hash -d seer=~/Projects/seer/

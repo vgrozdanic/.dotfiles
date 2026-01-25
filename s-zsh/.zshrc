@@ -10,6 +10,10 @@ export ZSH="$HOME/.oh-my-zsh"
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="bira"
 
+# Performance optimizations
+zstyle ':omz:update' mode disabled  # Disable automatic updates
+ZSH_DISABLE_COMPFIX="true"          # Skip compaudit check (faster startup)
+
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -52,7 +56,7 @@ ZSH_THEME="bira"
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -70,9 +74,18 @@ ZSH_THEME="bira"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions kubectl)
+plugins=(git zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
+
+# Lazy-load kubectl completions (only when kubectl is first used)
+if command -v kubectl &> /dev/null; then
+  kubectl() {
+    unfunction kubectl
+    source <(command kubectl completion zsh)
+    kubectl "$@"
+  }
+fi
 
 # User configuration
 
@@ -107,32 +120,24 @@ alias sentry-workers-dev-up='sentry devserver --workers'
 alias sentry-dev-fe='yarn dev-ui'
 alias gcd='git checkout development'
 alias d='docker'
-export PATH="/Users/vjerangrozdanic/.local/share/sentry-devenv/bin:$PATH"
+alias lg=lazygit
 
+# Consolidated PATH configuration
+export PNPM_HOME="/Users/vjerangrozdanic/Library/pnpm"
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$HOME/.local/bin:$HOME/.local/share/sentry-devenv/bin:$HOME/.local/share/sentry-devtools/bin:$PNPM_HOME:$BUN_INSTALL/bin:$PATH"
 
+# Homebrew environment
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Direnv hook (deferred for faster startup)
+_direnv_hook() {
+  eval "$(direnv hook zsh)"
+  unfunction _direnv_hook
+}
+autoload -U add-zsh-hook
+add-zsh-hook precmd _direnv_hook
 
-
-eval "$(direnv hook zsh)"
-
-export PATH="/Users/vjerangrozdanic/.local/share/sentry-devtools/bin:$PATH"
-
-alias lg=lazygit
-export PATH="$HOME/.local/bin:$PATH"
-
-# pnpm
-export PNPM_HOME="/Users/vjerangrozdanic/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# bun completions
-[ -s "/Users/vjerangrozdanic/.bun/_bun" ] && source "/Users/vjerangrozdanic/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+# Bun completions (conditional loading)
+[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 

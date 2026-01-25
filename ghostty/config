@@ -1,0 +1,25 @@
+shell-integration = zsh
+font-family = JetBrains Mono
+theme = Dracula
+mouse-hide-while-typing = true
+scrollback-limit = 1000000
+window-inherit-working-directory = true
+working-directory = home
+
+keybind = ctrl+a>h=goto_split:left
+keybind = ctrl+a>j=goto_split:down
+keybind = ctrl+a>k=goto_split:up
+keybind = ctrl+a>l=goto_split:right
+keybind = ctrl+a>f=toggle_split_zoom
+
+keybind = ctrl+a>shift+h=resize_split:left,20
+keybind = ctrl+a>shift+j=resize_split:down,20
+keybind = ctrl+a>shift+k=resize_split:up,20
+keybind = ctrl+a>shift+l=resize_split:right,20
+
+keybind = ctrl+a>shift+backslash=new_split:right
+keybind = ctrl+a>minus=new_split:down
+
+keybind = ctrl+a>n=next_tab
+keybind = ctrl+a>p=previous_tab
+

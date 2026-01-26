@@ -35,25 +35,21 @@ return {
   },
 
   {
-    "NeogitOrg/neogit",
+    "kdheepak/lazygit.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "sindrets/diffview.nvim",
-      "nvim-telescope/telescope.nvim",
     },
-    cmd = "Neogit",
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
     keys = {
-      { "<leader>gg", "<cmd>Neogit<cr>", desc = "Neogit" },
-      { "<leader>gc", "<cmd>Neogit commit<cr>", desc = "Neogit Commit" },
-      { "<leader>gp", "<cmd>Neogit pull<cr>", desc = "Neogit Pull" },
-      { "<leader>gP", "<cmd>Neogit push<cr>", desc = "Neogit Push" },
-    },
-    opts = {
-      integrations = {
-        telescope = true,
-        diffview = true,
-      },
-      kind = "tab",
+      { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+      { "<leader>gc", "<cmd>LazyGit<cr>", desc = "LazyGit Commit" },
+      { "<leader>gf", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit Current File" },
     },
   },
 

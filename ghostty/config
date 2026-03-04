@@ -28,4 +28,5 @@ working-directory = home
 command = /opt/homebrew/bin/tmux new-session -A -s main
 
 desktop-notifications = true
+term = xterm-256color
 

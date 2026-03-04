@@ -121,6 +121,8 @@ alias sentry-dev-fe='yarn dev-ui'
 alias gcd='git checkout development'
 alias d='docker'
 alias lg=lazygit
+alias n="nvim ."
+alias s="source .venv/bin/activate"
 
 # Consolidated PATH configuration
 export PNPM_HOME="/Users/vjerangrozdanic/Library/pnpm"

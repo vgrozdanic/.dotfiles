@@ -148,3 +148,4 @@ hash -d getsentry=~/Projects/getsentry/
 hash -d relay=~/Projects/relay/
 hash -d sentry-docs=~/Projects/sentry-docs/
 hash -d seer=~/Projects/seer/
+# source "$(gcloud info --format="value(installation.sdk_root)")/path.zsh.inc"

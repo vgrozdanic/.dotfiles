@@ -68,6 +68,20 @@ map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
+-- Scratch buffer
+map("n", "<leader>.", function()
+  local buf = vim.iter(vim.api.nvim_list_bufs()):find(function(b)
+    return vim.bo[b].buftype == "nofile" and vim.api.nvim_buf_get_name(b) == ""
+  end)
+  if not buf then
+    buf = vim.api.nvim_create_buf(true, true)
+    vim.bo[buf].buftype = "nofile"
+    vim.bo[buf].bufhidden = "hide"
+    vim.bo[buf].swapfile = false
+  end
+  vim.api.nvim_set_current_buf(buf)
+end, { desc = "Open scratch buffer" })
+
 -- Diagnostic keymaps
 map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })

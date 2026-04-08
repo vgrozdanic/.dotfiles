@@ -26,18 +26,13 @@ return {
             { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
           },
           lualine_x = {
-            { "encoding" },
             { "fileformat" },
           },
           lualine_y = {
             { "progress", separator = " ", padding = { left = 1, right = 0 } },
             { "location", padding = { left = 0, right = 1 } },
           },
-          lualine_z = {
-            function()
-              return " " .. os.date("%R")
-            end,
-          },
+          lualine_z = {},
         },
         extensions = { "nvim-tree", "lazy" },
       }

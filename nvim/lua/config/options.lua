@@ -6,6 +6,7 @@ vim.g.loaded_netrwPlugin = 1
 
 -- General
 opt.mouse = "a"
+opt.autoread = true
 opt.clipboard = "unnamedplus"
 opt.swapfile = false
 opt.backup = false
@@ -60,6 +61,11 @@ opt.pumblend = 10
 opt.spell = true
 opt.spelllang = { "en_us" }
 opt.spelloptions = "camel"
+
+-- Auto-reload files changed outside of Neovim
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  command = "checktime",
+})
 
 -- Folding
 opt.foldcolumn = "1"

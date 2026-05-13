@@ -15,6 +15,7 @@ return {
         "prettier",
         "black",
         "isort",
+        "terraform-ls",
       },
     },
     config = function(_, opts)
@@ -56,6 +57,7 @@ return {
         "rust_analyzer",
         "ts_ls",
         "eslint",
+        "terraformls",
       },
     },
   },
@@ -172,6 +174,14 @@ return {
         },
       })
 
+      -- Terraform
+      vim.lsp.config("terraformls", {
+        cmd = { "terraform-ls", "serve" },
+        root_markers = { ".terraform", ".git" },
+        filetypes = { "terraform", "terraform-vars" },
+        capabilities = capabilities,
+      })
+
       -- ESLint
       vim.lsp.config("eslint", {
         cmd = { "vscode-eslint-language-server", "--stdio" },
@@ -183,7 +193,7 @@ return {
       })
 
       -- Enable the configured LSP servers
-      vim.lsp.enable({ "lua_ls", "pyright", "rust_analyzer", "ts_ls", "eslint" })
+      vim.lsp.enable({ "lua_ls", "pyright", "rust_analyzer", "ts_ls", "eslint", "terraformls" })
 
       -- LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {

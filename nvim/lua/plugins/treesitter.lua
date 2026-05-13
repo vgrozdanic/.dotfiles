@@ -33,6 +33,8 @@ return {
         "query",
         "regex",
         "rust",
+        "terraform",
+        "hcl",
         "toml",
         "tsx",
         "typescript",

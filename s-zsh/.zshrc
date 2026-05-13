@@ -132,13 +132,7 @@ export PATH="$HOME/.local/bin:$HOME/.local/share/sentry-devenv/bin:$HOME/.local/
 # Homebrew environment
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Direnv hook (deferred for faster startup)
-_direnv_hook() {
-  eval "$(direnv hook zsh)"
-  unfunction _direnv_hook
-}
-autoload -U add-zsh-hook
-add-zsh-hook precmd _direnv_hook
+eval "$(direnv hook zsh)"
 
 # Bun completions (conditional loading)
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
@@ -149,3 +143,6 @@ hash -d relay=~/Projects/relay/
 hash -d sentry-docs=~/Projects/sentry-docs/
 hash -d seer=~/Projects/seer/
 # source "$(gcloud info --format="value(installation.sdk_root)")/path.zsh.inc"
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/terraform terraform

@@ -174,11 +174,16 @@ return {
         },
       })
 
-      -- Terraform
+      -- Terraform / Terragrunt
+      vim.filetype.add({
+        extension = { hcl = "terraform" },
+        filename = { ["terragrunt.hcl"] = "terraform" },
+      })
+
       vim.lsp.config("terraformls", {
         cmd = { "terraform-ls", "serve" },
-        root_markers = { ".terraform", ".git" },
-        filetypes = { "terraform", "terraform-vars" },
+        root_markers = { ".terraform", "terragrunt.hcl", ".git" },
+        filetypes = { "terraform", "terraform-vars", "hcl" },
         capabilities = capabilities,
       })
 

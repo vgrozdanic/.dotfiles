@@ -15,6 +15,7 @@ return {
         "prettier",
         "black",
         "isort",
+        "ruff",
         "terraform-ls",
       },
     },
@@ -232,9 +233,6 @@ return {
           vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
           vim.keymap.set("n", "gr", function()
             require("telescope.builtin").lsp_references()
-          end, opts)
-          vim.keymap.set("n", "<leader>cf", function()
-            vim.lsp.buf.format({ async = true })
           end, opts)
         end,
       })

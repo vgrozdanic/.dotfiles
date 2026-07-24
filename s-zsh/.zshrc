@@ -123,6 +123,7 @@ alias d='docker'
 alias lg=lazygit
 alias n="nvim ."
 alias s="source .venv/bin/activate"
+alias oc='opencode'
 
 # Consolidated PATH configuration
 export PNPM_HOME="/Users/vjerangrozdanic/Library/pnpm"

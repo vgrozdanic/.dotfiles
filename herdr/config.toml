@@ -1,0 +1,22 @@
+# herdr — keybindings ported from tmux (~/.dotfiles/tmux/.tmux.conf)
+# https://herdr.dev/docs/configuration/#keybindings
+
+onboarding = false
+
+[keys]
+# tmux: set -g prefix C-a
+prefix = "ctrl+a"
+
+# tmux: bind-key h/j/k/l select-pane
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# tmux: bind | split-window -h ; bind - split-window -v
+split_vertical = "prefix+|"
+split_horizontal = "prefix+minus"
+
+# herdr defaults kept:
+# resize_mode = "prefix+r"
+# reload_config = "prefix+shift+r"

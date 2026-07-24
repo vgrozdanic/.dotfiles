@@ -24,8 +24,9 @@ working-directory = home
 # keybind = ctrl+a>n=next_tab
 # keybind = ctrl+a>p=previous_tab
 
-# Auto-start tmux
-command = /opt/homebrew/bin/tmux new-session -A -s main
+# Auto-start herdr
+# command = /opt/homebrew/bin/tmux new-session -A -s main
+command = /opt/homebrew/bin/herdr
 
 desktop-notifications = true
 term = xterm-256color

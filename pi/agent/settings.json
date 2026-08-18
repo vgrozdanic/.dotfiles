@@ -1,0 +1,22 @@
+{
+  "lastChangelogVersion": "0.84.2",
+  "theme": "dark",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "hideThinkingBlock": false,
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "npm:pi-web-access",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@dietrichgebert/ponytail",
+    "npm:@plannotator/pi-extension",
+    {
+      "source": "npm:@gotgenes/pi-permission-system",
+      "extensions": [
+        "-src/index.ts"
+      ]
+    },
+    "npm:pi-mermaid"
+  ],
+  "defaultThinkingLevel": "high"
+}

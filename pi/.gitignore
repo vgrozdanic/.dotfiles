@@ -1,0 +1,18 @@
+# Credentials and machine-local state
+/agent/auth.json
+/agent/trust.json
+/agent/sessions/
+
+# Generated packages and caches
+/agent/bin/
+/agent/npm/
+/agent/mcp-cache.json
+/agent/models-store.json
+/web-search-cache/
+
+# Runtime logs
+/agent/extensions/**/logs/
+
+# macOS
+.DS_Store
+

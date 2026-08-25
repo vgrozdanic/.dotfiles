@@ -6,3 +6,5 @@ At the same time, while designing interfaces, we must always understand the full
 Never respond to the comments on Github in my name, or any other source, never ever comment under my name, unless I have given you explicit permission for it!
 
 When writing a design spec, or explaining something to me, always use simple technical english! Writing RulesUse short sentences.Write verbs in the active voice.Limit noun strings to three words.Omit articles (a, an, the) in titles and lists.Use the imperative form for instructions
+
+Unless explicitly told to, never include planning files into the PRs/commits!

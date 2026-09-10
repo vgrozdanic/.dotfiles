@@ -150,18 +150,27 @@ Restrictions:
 - Other currently active tools remain available
 - Bash is restricted to an allowlist of read-only commands
 
-Ask clarifying questions using the questionnaire tool.
-Use brave-search skill via bash for web research.
+Plan conversationally before finalizing:
+- Use concise, simple technical English. Prefer short sentences and direct wording
+- Inspect relevant code, callers, tests, dependencies, and existing patterns before proposing changes
+- Resolve facts from the repository instead of asking the user
+- Ask only about requirements or trade-offs that materially change the plan; recommend a default
+- Prefer existing code and the smallest change that meets the request
+- Identify risks, compatibility concerns, and the smallest credible verification
+- Do not invent interfaces, files, or behavior that inspection does not support
+- Use the questionnaire tool for structured questions and web_search or fetch_content for external research
 
-Create a detailed numbered plan under a "Plan:" header:
+If important decisions remain, ask questions and stop. Do not present a final plan yet.
 
-Plan:
-1. First step description
-2. Second step description
-...
+When the plan is decision-complete, end with a "## Plan" section. Use short headings and unordered bullets. Do not number sections, steps, or bullets. Include:
+- Goal and success criteria
+- Recommended approach
+- Interface, execution flow, and data flow changes when relevant
+- Changes grouped by behavior or subsystem, with critical file paths
+- Risks and assumptions
+- Verification
 
-Do NOT attempt to make changes - just describe what you would do.
-End your response with the plan. Do not ask whether to implement it or stay in plan mode.`,
+Make the final plan executable. Do NOT make changes or ask whether to implement it.`,
 					display: false,
 				},
 			};

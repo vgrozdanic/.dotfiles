@@ -23,12 +23,9 @@ return {
       require("mason").setup(opts)
       local mr = require("mason-registry")
       mr:on("package:install:success", function()
-        vim.defer_fn(function()
-          require("lazy.core.handler.event").trigger({
-            event = "FileType",
-            buf = vim.api.nvim_get_current_buf(),
-          })
-        end, 100)
+        vim.schedule(function()
+          vim.api.nvim_exec_autocmds("FileType", { buffer = vim.api.nvim_get_current_buf() })
+        end)
       end)
 
       local function ensure_installed()
@@ -52,6 +49,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     dependencies = { "mason.nvim" },
     opts = {
+      automatic_enable = false,
       ensure_installed = {
         "lua_ls",
         "pyright",
@@ -91,14 +89,12 @@ return {
         vim.lsp.protocol.make_client_capabilities(),
         require("cmp_nvim_lsp").default_capabilities()
       )
+      vim.lsp.config("*", { capabilities = capabilities })
 
       -- Setup LSP servers using new vim.lsp.config API
 
       -- Lua
       vim.lsp.config("lua_ls", {
-        cmd = { "lua-language-server" },
-        root_markers = { ".luarc.json", ".luarc.jsonc", ".luacheckrc", ".stylua.toml", "stylua.toml", "selene.toml", "selene.yml", ".git" },
-        capabilities = capabilities,
         settings = {
           Lua = {
             workspace = {
@@ -113,9 +109,6 @@ return {
 
       -- Python
       vim.lsp.config("pyright", {
-        cmd = { "pyright-langserver", "--stdio" },
-        root_markers = { "pyrightconfig.json", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", ".git" },
-        capabilities = capabilities,
         settings = {
           python = {
             analysis = {
@@ -129,15 +122,9 @@ return {
 
       -- Rust
       vim.lsp.config("rust_analyzer", {
-        cmd = { "rust-analyzer" },
-        root_markers = { "Cargo.toml", "rust-project.json", ".git" },
-        capabilities = capabilities,
         settings = {
           ["rust-analyzer"] = {
-            cargo = {
-              allFeatures = true,
-            },
-            checkOnSave = {
+            check = {
               command = "clippy",
             },
           },
@@ -146,9 +133,6 @@ return {
 
       -- TypeScript
       vim.lsp.config("ts_ls", {
-        cmd = { "typescript-language-server", "--stdio" },
-        root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
-        capabilities = capabilities,
         settings = {
           typescript = {
             inlayHints = {
@@ -181,18 +165,8 @@ return {
         filename = { ["terragrunt.hcl"] = "terraform" },
       })
 
-      vim.lsp.config("terraformls", {
-        cmd = { "terraform-ls", "serve" },
-        root_markers = { ".terraform", "terragrunt.hcl", ".git" },
-        filetypes = { "terraform", "terraform-vars", "hcl" },
-        capabilities = capabilities,
-      })
-
       -- ESLint
       vim.lsp.config("eslint", {
-        cmd = { "vscode-eslint-language-server", "--stdio" },
-        root_markers = { ".eslintrc", ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.yaml", ".eslintrc.yml", ".eslintrc.json", "eslint.config.js", "package.json", ".git" },
-        capabilities = capabilities,
         settings = {
           workingDirectory = { mode = "auto" },
         },
@@ -205,7 +179,6 @@ return {
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
         callback = function(ev)
-          local client = vim.lsp.get_client_by_id(ev.data.client_id)
           local opts = { buffer = ev.buf, silent = true }
 
           -- Enable completion triggered by <c-x><c-o>

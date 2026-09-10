@@ -1,11 +1,12 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "master",
     version = false,
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile", "BufWritePre", "VeryLazy" },
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
+      { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
     },
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     keys = {

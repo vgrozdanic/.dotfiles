@@ -83,9 +83,9 @@ map("n", "<leader>.", function()
 end, { desc = "Open scratch buffer" })
 
 -- Diagnostic keymaps
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
+map("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = "Go to previous diagnostic message" })
+map("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = "Go to next diagnostic message" })
+map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 
 -- Spell checking keymaps

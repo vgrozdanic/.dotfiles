@@ -20,3 +20,21 @@ split_horizontal = "prefix+minus"
 # herdr defaults kept:
 # resize_mode = "prefix+r"
 # reload_config = "prefix+shift+r"
+
+[[keys.command]]
+key = "prefix+f1"
+type = "shell"
+description = "Open Pi in sentry"
+command = 'pane_id=$("$HERDR_BIN_PATH" tab create --workspace "$HERDR_ACTIVE_WORKSPACE_ID" --cwd "$HOME/Projects/sentry" --label sentry --focus | jq -r ".result.root_pane.pane_id") && "$HERDR_BIN_PATH" pane run "$pane_id" pi'
+
+[[keys.command]]
+key = "prefix+f2"
+type = "shell"
+description = "Open Pi in sentry2"
+command = 'pane_id=$("$HERDR_BIN_PATH" tab create --workspace "$HERDR_ACTIVE_WORKSPACE_ID" --cwd "$HOME/Projects/sentry2" --label sentry2 --focus | jq -r ".result.root_pane.pane_id") && "$HERDR_BIN_PATH" pane run "$pane_id" pi'
+
+[[keys.command]]
+key = "prefix+f3"
+type = "shell"
+description = "Open Pi in Projects"
+command = 'pane_id=$("$HERDR_BIN_PATH" tab create --workspace "$HERDR_ACTIVE_WORKSPACE_ID" --cwd "$HOME/Projects" --label Projects --focus | jq -r ".result.root_pane.pane_id") && "$HERDR_BIN_PATH" pane run "$pane_id" pi'

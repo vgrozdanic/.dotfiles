@@ -165,6 +165,20 @@ describe("mcp-auth storage paths", () => {
     expect(chunkEntries.every(([, payload]) => payload.length <= AUTH_SECRET_VALUE_LIMIT)).toBe(true);
   });
 
+  it("consolidates old chunks when the store accepts the full record", () => {
+    process.env.PI_MCP_ADAPTER_TEST_AUTH_STORE = "sizelimited";
+    const accessToken = "x".repeat(5000);
+    saveAuthEntry("consolidated", { tokens: { accessToken } }, "https://example.com/mcp");
+    expect(getTestAuthSecretStoreEntries().some(([account]) => account.includes(".chunk."))).toBe(true);
+
+    process.env.PI_MCP_ADAPTER_TEST_AUTH_STORE = "unlimited";
+    expect(getAuthEntry("consolidated")?.tokens?.accessToken).toBe(accessToken);
+
+    const entries = getTestAuthSecretStoreEntries();
+    expect(entries).toHaveLength(1);
+    expect(entries[0][0]).not.toContain(".chunk.");
+  });
+
   it("persists records that exceed the strictest per-value store limit", () => {
     process.env.PI_MCP_ADAPTER_TEST_AUTH_STORE = "sizelimited";
     const accessToken = "x".repeat(5000);

@@ -245,7 +245,7 @@ describe("authenticateServer", () => {
     expect(ui.confirm).not.toHaveBeenCalled();
     expect(ui.input).toHaveBeenCalledWith(
       expect.stringContaining(
-        `\u001B]8;;${authorizationUrl}\u001B\\Open authorization page\u001B]8;;\u001B\\\n${authorizationUrl}`,
+        `\u001B]8;;${authorizationUrl}\u001B\\Open authorization page\u001B]8;;\u001B\\\n\nApprove access`,
       ),
       undefined,
       { signal: inputController.signal },

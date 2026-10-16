@@ -135,6 +135,7 @@ type KeyringModule = { Entry: KeyringEntryConstructor };
 type KeyringRequire = ((id: string) => unknown) & { resolve(id: string): string };
 
 interface AuthSecretStore {
+  valueLimit?: number;
   read(account: string): string | undefined;
   write(account: string, payload: string): void;
   remove(account: string): void;
@@ -151,6 +152,7 @@ const memoryAuthEntries = new Map<string, string>();
 
 let testAuthSecretStoreReadCount = 0;
 const authEntryCache = new Map<string, AuthEntry | undefined>();
+const authInspectionCache = new Map<string, AuthEntry | undefined>();
 
 function isAuthEntryCacheEnabled(): boolean {
   return process.env[AUTH_CACHE_DISABLED_ENV] !== '1';
@@ -161,6 +163,7 @@ function cloneAuthEntry(entry: AuthEntry | undefined): AuthEntry | undefined {
 }
 
 const memoryAuthSecretStore: AuthSecretStore = {
+  valueLimit: AUTH_SECRET_VALUE_LIMIT,
   read(account) {
     testAuthSecretStoreReadCount++;
     return memoryAuthEntries.get(account);
@@ -174,6 +177,9 @@ const memoryAuthSecretStore: AuthSecretStore = {
 };
 
 const keyringAuthSecretStore: AuthSecretStore = {
+  // macOS Keychain accepts OAuth records directly. Avoid one password prompt
+  // per artificial Windows-sized chunk.
+  ...(process.platform === 'darwin' ? {} : { valueLimit: AUTH_SECRET_VALUE_LIMIT }),
   read(account) {
     return getKeyringEntry(account).getPassword() ?? undefined;
   },
@@ -187,6 +193,7 @@ const keyringAuthSecretStore: AuthSecretStore = {
 
 /** Mimics the Windows Credential Manager per-value ceiling for tests. */
 const sizeLimitedAuthSecretStore: AuthSecretStore = {
+  valueLimit: AUTH_SECRET_VALUE_LIMIT,
   read(account) {
     testAuthSecretStoreReadCount++;
     return memoryAuthEntries.get(account);
@@ -235,11 +242,13 @@ const keyRevokedAuthSecretStore: AuthSecretStore = {
 export function resetTestAuthSecretStore(): void {
   memoryAuthEntries.clear();
   authEntryCache.clear();
+  authInspectionCache.clear();
   testAuthSecretStoreReadCount = 0;
 }
 
 export function resetAuthEntryCache(): void {
   authEntryCache.clear();
+  authInspectionCache.clear();
 }
 
 export function getTestAuthSecretStoreReadCount(): number {
@@ -256,6 +265,10 @@ export function removeTestAuthSecretStoreEntry(account: string): void {
 
 function getAuthSecretStore(): AuthSecretStore {
   if (process.env[TEST_AUTH_STORE_ENV] === 'memory') return memoryAuthSecretStore;
+  if (process.env[TEST_AUTH_STORE_ENV] === 'unlimited') {
+    const { valueLimit: _valueLimit, ...unlimitedStore } = memoryAuthSecretStore;
+    return unlimitedStore;
+  }
   if (process.env[TEST_AUTH_STORE_ENV] === 'sizelimited') return sizeLimitedAuthSecretStore;
   if (process.env[TEST_AUTH_STORE_ENV] === 'unavailable') return unavailableAuthSecretStore;
   if (process.env[TEST_AUTH_STORE_ENV] === 'keyrevoked') return keyRevokedAuthSecretStore;
@@ -647,11 +660,18 @@ function removeLegacyAuthEntry(serverName: string, options?: AuthStorageOptions)
   }
 }
 
-function writeSecureAuthEntryToStore(store: AuthSecretStore, serverName: string, entry: AuthEntry): void {
+function writeSecureAuthEntryToStore(
+  store: AuthSecretStore,
+  serverName: string,
+  entry: AuthEntry,
+  knownManifest?: AuthEntryChunkManifest,
+): void {
   const account = getAuthEntryAccount(serverName);
   const payload = JSON.stringify(entry);
-  const previousManifest = readExistingChunkManifest(store, serverName, account);
-  const manifest = payload.length > AUTH_SECRET_CHUNK_SIZE ? createChunkManifest(payload) : undefined;
+  const previousManifest = knownManifest ?? readExistingChunkManifest(store, serverName, account);
+  const manifest = store.valueLimit !== undefined && payload.length > AUTH_SECRET_CHUNK_SIZE
+    ? createChunkManifest(payload)
+    : undefined;
 
   try {
     if (manifest) {
@@ -685,9 +705,11 @@ function publishAuthEntryToCache(serverName: string, payload: string): void {
   const normalized = toAuthEntry(JSON.parse(payload) as unknown);
   if (!normalized) {
     authEntryCache.delete(serverName);
+    authInspectionCache.delete(serverName);
     return;
   }
   authEntryCache.set(serverName, cloneAuthEntry(normalized));
+  authInspectionCache.set(serverName, cloneAuthEntry(normalized));
 }
 
 function writeSecureAuthEntry(serverName: string, entry: AuthEntry): void {
@@ -726,6 +748,9 @@ function readAuthEntryFromStore(
     const entry = manifest
       ? readChunkedAuthEntry(store, serverName, account, manifest)
       : parseAuthEntryPayload(serverName, payload, 'OS secure credential store');
+    if (manifest && store.valueLimit === undefined && behavior.migrateLegacy !== false) {
+      writeSecureAuthEntryToStore(store, serverName, entry, manifest);
+    }
     removeLegacyAuthEntry(serverName, options);
     return entry;
   }
@@ -743,11 +768,12 @@ function readAuthEntry(
   options?: AuthStorageOptions,
   behavior: { migrateLegacy?: boolean } = {},
 ): AuthEntry | undefined {
-  // Status-only reads deliberately bypass the cache because they do not
-  // migrate legacy entries.
-  const cacheable = behavior.migrateLegacy !== false && isAuthEntryCacheEnabled();
-  if (cacheable && authEntryCache.has(serverName)) {
-    return cloneAuthEntry(authEntryCache.get(serverName));
+  // Keep status reads separate so a cached legacy entry cannot skip migration
+  // when an authentication operation later reads it.
+  const cache = behavior.migrateLegacy === false ? authInspectionCache : authEntryCache;
+  const cacheable = isAuthEntryCacheEnabled();
+  if (cacheable && cache.has(serverName)) {
+    return cloneAuthEntry(cache.get(serverName));
   }
 
   let entry: AuthEntry | undefined;
@@ -758,7 +784,7 @@ function readAuthEntry(
     entry = readAuthEntryFromStore(linuxKeyringRecoveryAuthSecretStore, serverName, options, behavior);
   }
 
-  if (cacheable) authEntryCache.set(serverName, cloneAuthEntry(entry));
+  if (cacheable) cache.set(serverName, cloneAuthEntry(entry));
   return entry;
 }
 
@@ -845,6 +871,7 @@ export function removeAuthEntry(serverName: string, options?: AuthStorageOptions
     removeAuthEntryFromStore(linuxKeyringRecoveryAuthSecretStore, serverName);
   }
   authEntryCache.delete(serverName);
+  authInspectionCache.delete(serverName);
   removeLegacyAuthEntry(serverName, options);
 }
 
@@ -853,6 +880,7 @@ export function removeAuthEntry(serverName: string, options?: AuthStorageOptions
  */
 export function invalidateAuthEntryCache(serverName: string): void {
   authEntryCache.delete(serverName);
+  authInspectionCache.delete(serverName);
 }
 
 /**

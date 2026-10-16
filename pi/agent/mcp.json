@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "datadog": {
+      "url": "https://mcp.datadoghq.com/v1/mcp",
+      "headers": {
+        "X-Datadog-MCP-Toolsets": "core,dbm"
+      }
+    },
+    "sentry": {
+      "url": "https://mcp.sentry.dev/mcp"
+    },
+    "linear": {
+      "url": "https://mcp.linear.app/mcp"
+    }
+  }
+}

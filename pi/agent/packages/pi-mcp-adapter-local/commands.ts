@@ -319,7 +319,7 @@ export async function authenticateServer(
         if (inputSignal.aborted) return undefined;
         return ui.input(
           `Complete ${serverName} OAuth\n\n` +
-            `${terminalHyperlink("Open authorization page", authorizationUrl)}\n${authorizationUrl}\n\n` +
+            `${terminalHyperlink("Open authorization page", authorizationUrl)}\n\n` +
             "Approve access, then paste the full callback URL from the browser address bar below.",
           undefined,
           { signal: inputSignal },
@@ -605,6 +605,8 @@ function buildMcpPanelCallbacks(
       } catch {
         return "failed";
       }
+      if (connection?.status === "needs-auth") return "needs-auth";
+      if (connection?.status === "connected") return "connected";
       if (
         definition?.auth === "oauth"
         && serverUrl
@@ -620,8 +622,6 @@ function buildMcpPanelCallbacks(
           return "needs-auth";
         }
       }
-      if (connection?.status === "needs-auth") return "needs-auth";
-      if (connection?.status === "connected") return "connected";
       if (getFailureAgeSeconds(state, serverName) !== null) return "failed";
       return "idle";
     },

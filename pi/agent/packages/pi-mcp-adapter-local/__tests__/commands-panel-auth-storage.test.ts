@@ -58,4 +58,20 @@ describe("MCP panels with unavailable OAuth credential storage", () => {
     expect(getRendered()).not.toContain("needs auth");
     expect(getRendered()).toContain("OAuth credential store unavailable");
   });
+
+  it("does not inspect OAuth storage for a connected server", async () => {
+    process.env.PI_MCP_ADAPTER_TEST_AUTH_STORE = "unavailable";
+    const { ui, getRendered } = createPanelHarness();
+    const state = createState();
+    state.manager.getConnection = () => ({ status: "connected" });
+
+    await openMcpPanel(
+      state,
+      { getFlag: () => undefined } as any,
+      { hasUI: true, mode: "tui", cwd: "/tmp", ui } as any,
+    );
+
+    expect(getRendered()).toContain("connected");
+    expect(getRendered()).not.toContain("credential store unavailable");
+  });
 });
